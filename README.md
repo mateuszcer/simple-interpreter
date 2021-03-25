@@ -7,6 +7,7 @@
     division
     brackets
     factorial
+    negative numbers
 
 ";" at the end of expression is required
 "q" to quit

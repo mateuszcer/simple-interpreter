@@ -22,11 +22,12 @@ class InputStream:
         self.stream = []
         return float(result)
 
-
-number = '8' #represent that token is number
-read = ';' #end of expression
-equal = '= '
-quit = 'q'
+symbol = {
+        "number": '8',
+        "read": ';',
+        "equal": '= ',
+        "quit": 'q'
+}
 class Token:
     def __init__(self, kind, value=None):
         self.kind = kind; # char
@@ -48,7 +49,7 @@ class TokenStream:
         if is_float(char):
             self.cin.putback(char)
             value = self.cin.get_float()
-            tk = Token(number, value)
+            tk = Token(symbol["number"], value)
             return tk
         tk = Token(char)
         return tk
@@ -111,7 +112,7 @@ def primary():
             print("')' expected")
             return
         return val
-    elif tk.kind == number:
+    elif tk.kind == symbol["number"]:
         val = tk.value
         tk = ts.get()
         if tk and tk.kind == '!':
@@ -120,6 +121,18 @@ def primary():
             return val
         ts.putback(tk)    
         return val
+    elif tk.kind == "-":
+        tk = ts.get()
+        if tk and tk.kind == symbol["number"]:
+            val = -tk.value
+            tk = ts.get()
+            if tk and tk.kind == '!':
+                print("Factorial not defined for negative numbers")
+                return 0
+            ts.putback(tk)
+            return val
+        print("Number Expected")
+        return 0;
     else:
         print("Error Primary Expected")
         return 0;
@@ -144,13 +157,13 @@ def calculate():
         cin = InputStream(user_input)
         ts.cin = cin
         tk = ts.get()
-        if tk and tk.kind == quit: 
+        if tk and tk.kind == symbol["quit"]: 
             return 0
         ts.putback(tk)
         result = expression()
         tk = ts.get()
-        if tk and tk.kind == read:
-            print(equal, result)
+        if tk and tk.kind == symbol["read"]:
+            print(symbol["equal"], result)
             ts.clear()
         else:
             print("';' expected")
